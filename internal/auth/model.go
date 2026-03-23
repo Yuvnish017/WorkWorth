@@ -1,5 +1,9 @@
 package auth
 
+type ErrorResponse struct {
+	Message string `json:"message"`
+}
+
 type SignUpRequest struct {
 	Name            string `form:"name" binding:"required"`
 	Email           string `form:"email" binding:"required,email"`

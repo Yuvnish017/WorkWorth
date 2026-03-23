@@ -3,13 +3,38 @@ package auth
 import (
 	"WorkWorth/internal/users"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	jwt "github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/Yuvnish017/users"
 )
+
+type AccessTokenClaim struct {
+	UserId string `json:"user_id"`
+	Name   string `json:"name"`
+	jwt.RegisteredClaims
+}
+
+func CreateAccessToken(user *users.User, secret string, expiry int) (string, error) {
+	exp := time.Now().Add(time.Hour * time.Duration(expiry))
+	claims := AccessTokenClaim{
+		UserId: user.ID.Hex(),
+		Name:   user.Name,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(exp),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	t, err := token.SignedString([]byte(secret))
+	if err != nil {
+		return "", err
+	}
+	return t, err
+}
 
 func SignUp(c *gin.Context) {
 	var request SignUpRequest
@@ -53,7 +78,7 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	signupResponse = LoginResponse{
+	signupResponse := LoginResponse{
 		AccessToken: accessToken,
 	}
 

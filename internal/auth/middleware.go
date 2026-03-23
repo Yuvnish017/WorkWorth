@@ -15,10 +15,6 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-type ErrorResponse struct {
-	Message string `json:"message"`
-}
-
 func ValidateToken(tokenString string, secret string) (uint, error) {
 	claims := &Claims{}
 
