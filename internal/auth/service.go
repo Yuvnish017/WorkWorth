@@ -1,16 +1,13 @@
 package auth
 
 import (
-	"WorkWorth/internal/users"
-	"net/http"
+	"errors"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	jwt "github.com/golang-jwt/jwt/v5"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/Yuvnish017/users"
+	"github.com/Yuvnish017/WorkWorth/internal/users"
 )
 
 type AccessTokenClaim struct {
@@ -36,18 +33,23 @@ func CreateAccessToken(user *users.User, secret string, expiry int) (string, err
 	return t, err
 }
 
-func SignUp(c *gin.Context) {
-	var request SignUpRequest
+type AuthService struct {
+	userRepo  users.UserRepository
+	jwtSecret string
+	jwtExpiry int
+}
 
-	err := c.ShouldBind(&request)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
-		return
+func NewAuthService(repo users.UserRepository, secret string, expiry int) *AuthService {
+	return &AuthService{
+		userRepo:  repo,
+		jwtSecret: secret,
+		jwtExpiry: expiry,
 	}
+}
 
+func (s *AuthService) SignUp(request SignUpRequest) (*LoginResponse, error) {
 	if request.Password != request.ConfirmPassword {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Message: "password and confirm password do not match"})
-		return
+		return nil, errors.New("Password and confirm password do not match")
 	}
 
 	encryptedPassword, err := bcrypt.GenerateFromPassword(
@@ -55,32 +57,44 @@ func SignUp(c *gin.Context) {
 		bcrypt.DefaultCost,
 	)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+		return nil, err
 	}
 
-	request.Password = string(encryptedPassword)
-
-	user := users.User{
-		ID:       primitive.NewObjectID(),
-		Name:     request.Name,
-		Email:    request.Email,
-		Password: request.Password,
-	}
-
-	err := user.Create(c, &user)
+	user, err := s.userRepo.Create(request.Name, request.Email, encryptedPassword)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
+		return nil, err
 	}
 
-	accessToken, err := CreateAccessToken(&user, secret, expiry)
+	accessToken, err := CreateAccessToken(&user, s.jwtSecret, s.jwtExpiry)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: err.Error()})
-		return
+		return nil, err
 	}
 
 	signupResponse := LoginResponse{
 		AccessToken: accessToken,
 	}
 
-	c.JSON(http.StatusOK, signupResponse)
+	return &signupResponse, nil
+}
+
+func (s *AuthService) Login(request LoginRequest) (*LoginResponse, error) {
+	user, err := s.userRepo.GetUserByEmail(request.Email)
+	if err != nil {
+		return nil, err
+	}
+
+	if bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password)) != nil {
+		return nil, errors.New("Invalid credentials")
+	}
+
+	accessToken, err := CreateAccessToken(&user, s.jwtSecret, s.jwtExpiry)
+	if err != nil {
+		return nil, err
+	}
+
+	loginResponse := LoginResponse{
+		AccessToken: accessToken,
+	}
+
+	return &loginResponse, nil
 }
