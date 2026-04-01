@@ -7,7 +7,7 @@ import (
 	jwt "github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/Yuvnish017/WorkWorth/internal/users"
+	"WorkWorth/internal/users"
 )
 
 type AccessTokenClaim struct {

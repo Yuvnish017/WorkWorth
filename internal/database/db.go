@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/Yuvnish017/WorkWorth/config"
+	"WorkWorth/config"
+
 	_ "github.com/lib/pq"
 )
 
