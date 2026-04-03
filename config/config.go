@@ -9,6 +9,7 @@ type Config struct {
 	DBPassword string
 	DBName     string
 	JWTSecret  string
+	JWTExpiry  int
 }
 
 func NewConfig() (*Config, error) {
