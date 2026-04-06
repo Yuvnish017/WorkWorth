@@ -16,8 +16,10 @@ func SetupRouter(router *gin.Engine, db *sql.DB, cfg *config.Config) {
 
 	authHandler := auth.NewAuthHandler(authService)
 
-	api := router.Group("/api")
-	api.Use(auth.JwtAuthMiddleware(cfg.JWTSecret))
-	api.POST("/singup", authHandler.Signup)
-	api.POST("/login", authHandler.Login)
+	publicRouter := router.Group("")
+	publicRouter.POST("/signup", authHandler.Signup)
+
+	privateRouter := router.Group("")
+	privateRouter.Use(auth.JwtAuthMiddleware(cfg.JWTSecret))
+	privateRouter.POST("/login", authHandler.Login)
 }

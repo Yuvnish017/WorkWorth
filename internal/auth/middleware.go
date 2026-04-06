@@ -11,11 +11,11 @@ import (
 )
 
 type Claims struct {
-	UserId uint `json:"user_id"`
+	UserId int64 `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
-func ValidateToken(tokenString string, secret string) (uint, error) {
+func ValidateToken(tokenString string, secret string) (int64, error) {
 	claims := &Claims{}
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (any, error) {

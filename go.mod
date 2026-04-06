@@ -7,7 +7,6 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/lib/pq v1.12.1
 	github.com/spf13/viper v1.21.0
-	go.mongodb.org/mongo-driver v1.17.9
 	golang.org/x/crypto v0.49.0
 )
 

@@ -11,7 +11,7 @@ import (
 )
 
 type AccessTokenClaim struct {
-	UserId string `json:"user_id"`
+	UserId int64  `json:"user_id"`
 	Name   string `json:"name"`
 	jwt.RegisteredClaims
 }
@@ -19,7 +19,7 @@ type AccessTokenClaim struct {
 func CreateAccessToken(user *users.User, secret string, expiry int) (string, error) {
 	exp := time.Now().Add(time.Hour * time.Duration(expiry))
 	claims := AccessTokenClaim{
-		UserId: user.ID.Hex(),
+		UserId: user.ID,
 		Name:   user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(exp),
@@ -60,12 +60,12 @@ func (s *AuthService) SignUp(request SignUpRequest) (*LoginResponse, error) {
 		return nil, err
 	}
 
-	user, err := s.userRepo.Create(request.Name, request.Email, encryptedPassword)
+	user, err := s.userRepo.Create(request.Name, request.Email, string(encryptedPassword))
 	if err != nil {
 		return nil, err
 	}
 
-	accessToken, err := CreateAccessToken(&user, s.jwtSecret, s.jwtExpiry)
+	accessToken, err := CreateAccessToken(user, s.jwtSecret, s.jwtExpiry)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +87,7 @@ func (s *AuthService) Login(request LoginRequest) (*LoginResponse, error) {
 		return nil, errors.New("Invalid credentials")
 	}
 
-	accessToken, err := CreateAccessToken(&user, s.jwtSecret, s.jwtExpiry)
+	accessToken, err := CreateAccessToken(user, s.jwtSecret, s.jwtExpiry)
 	if err != nil {
 		return nil, err
 	}

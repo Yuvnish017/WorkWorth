@@ -2,15 +2,13 @@ package users
 
 import (
 	"database/sql"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type userRepository struct {
 	db *sql.DB
 }
 
-func NewUserRepository(db *sql.DB) *userRepository {
+func NewUserRepository(db *sql.DB) UserRepository {
 	return &userRepository{
 		db: db,
 	}
@@ -20,7 +18,7 @@ func (ur *userRepository) Create(name, email, password string) (*User, error) {
 	query := `
 		INSERT INTO users (name, email, password)
 		VALUES ($1, $2, $3)
-		RETURNING _id, name, email, password, created_at
+		RETURNING id, name, email, password, created_at
 	`
 
 	var user User
@@ -40,7 +38,7 @@ func (ur *userRepository) Create(name, email, password string) (*User, error) {
 
 func (ur *userRepository) GetUserByEmail(email string) (*User, error) {
 	query := `
-		SELECT _id, name, email, password, created_at
+		SELECT id, name, email, password, created_at
 		FROM users
 		WHERE email = $1
 	`
@@ -60,11 +58,11 @@ func (ur *userRepository) GetUserByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
-func (ur *userRepository) GetUserByID(id primitive.ObjectID) (*User, error) {
+func (ur *userRepository) GetUserByID(id int64) (*User, error) {
 	query := `
-		SELECT _id, name, email, password, created_at
+		SELECT id, name, email, password, created_at
 		FROM users
-		WHERE _id = $1
+		WHERE id = $1
 	`
 
 	var user User
