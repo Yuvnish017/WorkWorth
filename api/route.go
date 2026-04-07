@@ -18,8 +18,8 @@ func SetupRouter(router *gin.Engine, db *sql.DB, cfg *config.Config) {
 
 	publicRouter := router.Group("")
 	publicRouter.POST("/signup", authHandler.Signup)
+	publicRouter.POST("/login", authHandler.Login)
 
 	privateRouter := router.Group("")
 	privateRouter.Use(auth.JwtAuthMiddleware(cfg.JWTSecret))
-	privateRouter.POST("/login", authHandler.Login)
 }
