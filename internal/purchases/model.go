@@ -10,3 +10,9 @@ type Purchase struct {
 	Currency  string
 	CreatedAt time.Time
 }
+
+type CreatePurchaseRequest struct {
+	Name     string  `form:"name" binding:"required"`
+	Price    float64 `form:"price" binding:"required"`
+	Currency string  `form:"currency" binding:"required"`
+}
