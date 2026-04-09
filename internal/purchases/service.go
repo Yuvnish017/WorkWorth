@@ -41,3 +41,12 @@ func (ps *PurchaseService) CreatePurchase(userId int64, request CreatePurchaseRe
 
 	return purchase, nil
 }
+
+func (ps *PurchaseService) GetPurchaseByUserId(userId int64) ([]*Purchase, error) {
+	purchases, err := ps.purchaseRepo.FetchByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return purchases, err
+}

@@ -16,3 +16,7 @@ type CreatePurchaseRequest struct {
 	Price    float64 `form:"price" binding:"required"`
 	Currency string  `form:"currency" binding:"required"`
 }
+
+type ErrorResponse struct {
+	Message string
+}
