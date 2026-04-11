@@ -3,6 +3,7 @@ package auth
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	jwt "github.com/golang-jwt/jwt/v5"
@@ -48,8 +49,7 @@ func JwtAuthMiddleware(secret string) gin.HandlerFunc {
 				c.Abort()
 				return
 			}
-
-			c.Set("x-user-id", userID)
+			c.Set("x-user-id", strconv.FormatInt(userID, 10))
 			c.Next()
 			return
 		}

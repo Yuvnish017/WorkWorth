@@ -1,6 +1,7 @@
 package purchases
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -28,10 +29,13 @@ func (ph *PurchaseHandler) CreatePurchase(c *gin.Context) {
 	userId, err := strconv.ParseInt(c.GetString("x-user-id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "Issue in extracting user id"})
+		return
 	}
+	fmt.Println("Sending to service...")
 	response, err := ph.purchaseService.CreatePurchase(userId, request)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusCreated, response)
@@ -39,12 +43,15 @@ func (ph *PurchaseHandler) CreatePurchase(c *gin.Context) {
 
 func (ph *PurchaseHandler) FetchPurchasesByUserId(c *gin.Context) {
 	userId, err := strconv.ParseInt(c.GetString("x-user-id"), 10, 64)
+	fmt.Println(userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "Issue in extracting user id"})
+		return
 	}
 	response, err := ph.purchaseService.GetPurchaseByUserId(userId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusCreated, response)

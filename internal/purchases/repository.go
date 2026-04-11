@@ -19,7 +19,7 @@ func NewPurchaseRepository(db *sql.DB) *purchaseRepository {
 
 func (pr *purchaseRepository) Create(userId int64, name string, price float64, currency string) (*Purchase, error) {
 	query := `
-		INSERT INTO purchase (userId, name, price, currency)
+		INSERT INTO purchases (user_id, name, price, currency)
 		VALUES ($1, $2, $3, $4)
 		RETURNING id, user_id, name, price, currency, created_at
 	`
