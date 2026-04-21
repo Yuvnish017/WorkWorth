@@ -43,7 +43,6 @@ func (ph *PurchaseHandler) CreatePurchase(c *gin.Context) {
 
 func (ph *PurchaseHandler) FetchPurchasesByUserId(c *gin.Context) {
 	userId, err := strconv.ParseInt(c.GetString("x-user-id"), 10, 64)
-	fmt.Println(userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Message: "Issue in extracting user id"})
 		return

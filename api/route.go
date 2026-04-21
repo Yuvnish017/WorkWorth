@@ -3,6 +3,7 @@ package api
 import (
 	"WorkWorth/config"
 	"WorkWorth/internal/auth"
+	"WorkWorth/internal/currency"
 	"WorkWorth/internal/purchases"
 	"WorkWorth/internal/users"
 	"database/sql"
@@ -20,6 +21,12 @@ func SetupRouter(router *gin.Engine, db *sql.DB, cfg *config.Config) {
 	publicRouter := router.Group("")
 	publicRouter.POST("/signup", authHandler.Signup)
 	publicRouter.POST("/login", authHandler.Login)
+
+	currencyRepo := currency.NewCurrencyRepository(db)
+	currencyService := currency.NewCurrencyService(currencyRepo)
+	conversionHandler := currency.NewExchangeProvider(currencyService)
+
+	publicRouter.GET("/convert", conversionHandler.ConvertCurrency)
 
 	purchaseRepo := purchases.NewPurchaseRepository(db)
 	purchaseService := purchases.NewPurchaseService(purchaseRepo)
