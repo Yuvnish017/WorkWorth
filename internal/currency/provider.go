@@ -7,10 +7,10 @@ import (
 )
 
 type ExchangeProvider struct {
-	currencyService *currencyService
+	currencyService *CurrencyService
 }
 
-func NewExchangeProvider(cs *currencyService) *ExchangeProvider {
+func NewExchangeProvider(cs *CurrencyService) *ExchangeProvider {
 	return &ExchangeProvider{
 		currencyService: cs,
 	}
