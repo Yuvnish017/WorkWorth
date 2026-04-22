@@ -5,12 +5,12 @@ import (
 	"time"
 )
 
-type currencyService struct {
+type CurrencyService struct {
 	currencyRepo *currencyRepository
 }
 
-func NewCurrencyService(currencyRepo *currencyRepository) *currencyService {
-	return &currencyService{
+func NewCurrencyService(currencyRepo *currencyRepository) *CurrencyService {
+	return &CurrencyService{
 		currencyRepo: currencyRepo,
 	}
 }
@@ -30,7 +30,7 @@ func ValidateSupportedCurrency(currency string) bool {
 	return true
 }
 
-func (cs *currencyService) ConvertCurrency(request ConversionRequest) (*ConversionResponse, error) {
+func (cs *CurrencyService) ConvertCurrency(request ConversionRequest) (*ConversionResponse, error) {
 	if !ValidateSupportedCurrency(request.BaseCurrency) || !ValidateSupportedCurrency(request.TargetCurrency) {
 		return nil, errors.New("Either base or target currency not supported")
 	}
