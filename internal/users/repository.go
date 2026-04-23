@@ -14,20 +14,26 @@ func NewUserRepository(db *sql.DB) UserRepository {
 	}
 }
 
-func (ur *userRepository) Create(name, email, password string) (*User, error) {
+func (ur *userRepository) Create(cur *CreateUserRequest) (*User, error) {
 	query := `
-		INSERT INTO users (name, email, password)
-		VALUES ($1, $2, $3)
-		RETURNING id, name, email, password, created_at
+		INSERT INTO users (name, email, password, monthly_salary, monthly_working_days, hours_per_day, preferred_currency, fixed_expenses, variable_expenses)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		RETURNING id, name, email, password, monthly_salary, monthly_working_days, hours_per_day, preferred_currency, fixed_expenses, variable_expenses, created_at
 	`
 
 	var user User
 
-	err := ur.db.QueryRow(query, name, email, password).Scan(
+	err := ur.db.QueryRow(query, cur.Name, cur.Email, cur.Password, cur.MonthlySalary, cur.MonthlyWorkingDays, cur.HoursPerDay, cur.PreferredCurrency, cur.FixedExpenses, cur.EstimateVariableExpenses).Scan(
 		&user.ID,
 		&user.Name,
 		&user.Email,
 		&user.Password,
+		&user.MonthlySalary,
+		&user.MonthlyWorkingDays,
+		&user.HoursPerDay,
+		&user.PreferredCurrency,
+		&user.FixedExpenses,
+		&user.EstimateVariableExpenses,
 		&user.CreatedAt,
 	)
 	if err != nil {
@@ -38,7 +44,7 @@ func (ur *userRepository) Create(name, email, password string) (*User, error) {
 
 func (ur *userRepository) GetUserByEmail(email string) (*User, error) {
 	query := `
-		SELECT id, name, email, password, created_at
+		SELECT id, name, email, password, monthly_salary, monthly_working_days, hours_per_day, preferred_currency, fixed_expenses, variable_expenses, created_at
 		FROM users
 		WHERE email = $1
 	`
@@ -49,6 +55,12 @@ func (ur *userRepository) GetUserByEmail(email string) (*User, error) {
 		&user.Name,
 		&user.Email,
 		&user.Password,
+		&user.MonthlySalary,
+		&user.MonthlyWorkingDays,
+		&user.HoursPerDay,
+		&user.PreferredCurrency,
+		&user.FixedExpenses,
+		&user.EstimateVariableExpenses,
 		&user.CreatedAt,
 	)
 
@@ -60,7 +72,7 @@ func (ur *userRepository) GetUserByEmail(email string) (*User, error) {
 
 func (ur *userRepository) GetUserByID(id int64) (*User, error) {
 	query := `
-		SELECT id, name, email, password, created_at
+		SELECT id, name, email, password, monthly_salary, monthly_working_days, hours_per_day, preferred_currency, fixed_expenses, variable_expenses, created_at
 		FROM users
 		WHERE id = $1
 	`
@@ -71,6 +83,12 @@ func (ur *userRepository) GetUserByID(id int64) (*User, error) {
 		&user.Name,
 		&user.Email,
 		&user.Password,
+		&user.MonthlySalary,
+		&user.MonthlyWorkingDays,
+		&user.HoursPerDay,
+		&user.PreferredCurrency,
+		&user.FixedExpenses,
+		&user.EstimateVariableExpenses,
 		&user.CreatedAt,
 	)
 

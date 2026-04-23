@@ -36,11 +36,11 @@ func (cs *calculatorService) CalculatePurchase(request CalculatePurchaseRequest)
 		return nil, err
 	}
 
-	if converted_price.ConvertedValue > user.MonthlySalary {
+	if converted_price.ConvertedValue > user.MonthlySalary-user.FixedExpenses-user.EstimateVariableExpenses {
 		return nil, errors.New("Purchase price is greater than montly amount available.")
 	}
 
-	hourlyRate := user.MonthlySalary / (user.WorkingDays * user.HoursPerDay)
+	hourlyRate := user.MonthlySalary / (float64(user.MonthlyWorkingDays) * user.HoursPerDay)
 	requiredWorkHours := converted_price.ConvertedValue / hourlyRate
 
 	response := &CalculatePurchaseResponse{

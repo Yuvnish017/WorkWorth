@@ -60,7 +60,19 @@ func (s *AuthService) SignUp(request SignUpRequest) (*LoginResponse, error) {
 		return nil, err
 	}
 
-	user, err := s.userRepo.Create(request.Name, request.Email, string(encryptedPassword))
+	createUserRequest := &users.CreateUserRequest{
+		Name:                     request.Name,
+		Email:                    request.Email,
+		Password:                 string(encryptedPassword),
+		MonthlySalary:            request.MonthlySalary,
+		MonthlyWorkingDays:       request.MonthlyWorkingDays,
+		HoursPerDay:              request.HoursPerDay,
+		PreferredCurrency:        request.PreferredCurrency,
+		FixedExpenses:            request.FixedExpenses,
+		EstimateVariableExpenses: request.EstimateVariableExpenses,
+	}
+
+	user, err := s.userRepo.Create(createUserRequest)
 	if err != nil {
 		return nil, err
 	}
