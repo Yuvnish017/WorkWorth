@@ -70,6 +70,7 @@ func (s *AuthService) SignUp(request SignUpRequest) (*LoginResponse, error) {
 		PreferredCurrency:        request.PreferredCurrency,
 		FixedExpenses:            request.FixedExpenses,
 		EstimateVariableExpenses: request.EstimateVariableExpenses,
+		TargetMonthlySaving:      request.TargetMonthlySaving,
 	}
 
 	user, err := s.userRepo.Create(createUserRequest)

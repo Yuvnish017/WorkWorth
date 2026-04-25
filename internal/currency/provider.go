@@ -19,7 +19,7 @@ func NewExchangeProvider(cs *CurrencyService) *ExchangeProvider {
 func (ep *ExchangeProvider) ConvertCurrency(c *gin.Context) {
 	var conversionRequest ConversionRequest
 
-	if err := c.ShouldBind(&conversionRequest); err != nil {
+	if err := c.ShouldBindJSON(&conversionRequest); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
 		return
 	}

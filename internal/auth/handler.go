@@ -17,7 +17,7 @@ func NewAuthHandler(service *AuthService) *AuthHandler {
 func (h *AuthHandler) Signup(c *gin.Context) {
 	var request SignUpRequest
 
-	if err := c.ShouldBind(&request); err != nil {
+	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, ErrorResponse{Message: err.Error()})
 		return
 	}

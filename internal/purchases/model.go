@@ -12,9 +12,10 @@ type Purchase struct {
 }
 
 type CreatePurchaseRequest struct {
-	Name     string  `form:"name" binding:"required"`
-	Price    float64 `form:"price" binding:"required"`
-	Currency string  `form:"currency" binding:"required"`
+	Name              string  `form:"name" binding:"required"`
+	Price             float64 `form:"price" binding:"required"`
+	Currency          string  `form:"currency" binding:"required"`
+	PreferredCurrency string  `form:"pref_currency" binding:"required"`
 }
 
 type ErrorResponse struct {

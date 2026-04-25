@@ -15,6 +15,7 @@ type User struct {
 	PreferredCurrency        string
 	FixedExpenses            float64
 	EstimateVariableExpenses float64
+	TargetMonthlySaving      float64
 	CreatedAt                time.Time
 }
 
@@ -28,6 +29,7 @@ type CreateUserRequest struct {
 	PreferredCurrency        string
 	FixedExpenses            float64
 	EstimateVariableExpenses float64
+	TargetMonthlySaving      float64
 }
 
 type UserRepository interface {

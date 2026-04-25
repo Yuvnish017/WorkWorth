@@ -15,9 +15,9 @@ type ExchangeRate struct {
 }
 
 type ConversionRequest struct {
-	Value          float64 `form:"value" binding:"required"`
-	BaseCurrency   string  `form:"base_currency" binding:"required"`
-	TargetCurrency string  `form:"target_currency" binding:"required"`
+	Value          float64 `json:"value" binding:"required"`
+	BaseCurrency   string  `json:"base_currency" binding:"required"`
+	TargetCurrency string  `json:"target_currency" binding:"required"`
 }
 
 type ConversionResponse struct {

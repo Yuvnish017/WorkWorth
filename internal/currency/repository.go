@@ -17,7 +17,6 @@ func (cr *currencyRepository) GetRate(base, target string) (*ExchangeRate, error
 		SELECT id, base_currency, target_currency, rate, updated_at
 		FROM currencies
 		WHERE base_currency = $1 AND target_currency = $2
-		RETURNING id, base_currency, target_currency, rate, updated_at
 	`
 
 	var exchangeRate ExchangeRate
